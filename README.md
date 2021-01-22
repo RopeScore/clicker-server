@@ -2,13 +2,13 @@
 
 Server for [RopeScore/clicker](https://github.com/RopeScore/clicker)
 
-## Protocol `draft-1`
+## Protocol `draft-2`
 
 Clients MUST send and receive live data from the server over WebSocket served
 at `/ws`
 
 At the start of a connection the client MUST send either `REGISTER` or
-`LISTEN` which will determine if the client want to send or receive scores.
+`SUBSCRIBE` which will determine if the client want to send or receive scores.
 
 ### Sending client
 
@@ -36,11 +36,11 @@ and retry at a later time.
 
 #### Registration
 
-A receiving client begins the connection by sending the `LISTEN <ids>` command.
-The required parameter `ids` is a list of id's the client want to receive scores
-from.
+A receiving client begins the connection by sending the `SUBSCRIBE <ids>`
+command. The required parameter `ids` is a list of id's the client want to
+receive scores from.
 
-The server MUST respond to `LISTEN` with `CONNECT <ids>` where `ids` is a
+The server MUST respond to `SUBSCRIBE` with `CONNECT <ids>` where `ids` is a
 list of which of the requested id's are currently connected to the server.
 
 #### Sending client connected
@@ -60,6 +60,6 @@ Receiving clients MUST NOT respond.
 #### Score
 
 When one of the requested sending client's has sent a new score to the server
-the server MUST broadcast `SCORE <timestamp> <id> <score>`.
+the server MUST broadcast `SCORE <timestamp> <score> <id>`.
 
 Receiving clients MUST NOT respond.
