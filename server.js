@@ -27,8 +27,8 @@ function register (client, args) {
   }
 
   client.send(`REGISTERED ${id} ${secret}`)
+  console.log('>', `REGISTERED ${id} ${secret}`)
   clients.set(client, { type: 'sender', id, secret }) // TODO: this way is not great
-  console.log('%s registered', id)
   // TODO: broadcast to all listeners
 }
 
@@ -39,8 +39,8 @@ function score (client, args) {
     return
   }
 
-  let ts = parseInt(args.shift(), 10)
-  let score = parseInt(args.shift(), 10)
+  const ts = parseInt(args.shift(), 10)
+  const score = parseInt(args.shift(), 10)
 
   if (isNaN(ts) || isNaN(score)) {
     console.log('invalid message')
@@ -50,31 +50,35 @@ function score (client, args) {
   // TODO: broadcast to all listeners, translate ts?
 
   client.send(`SCORED ${ts}`)
+  console.log('>', `SCORED ${ts}`)
 }
 
 function subscribe (client, args) {
   if (clients.has(client)) {
     console.log('client already has a role')
-    return
   }
   // we need a mapping of id => subscribers for broadcasts
 }
 
 function disconnect (client) {
-  let meta = clients.get(client)
+  const meta = clients.get(client)
 
-  if (meta.type === 'sender') {
+  if (meta?.type === 'sender') {
     // TODO: broadcast to all listeners
-    console.log(`%s disconnected`, meta.id)
+    console.log('%s disconnected', meta.id)
   }
   clients.delete(client)
 }
 
 wss.on('connection', function connection (ws) {
   ws.isAlive = true
-  ws.on('pong', function heartbeat () { this.isAlive = true })
+  ws.on('pong', function heartbeat () {
+    this.isAlive = true
+    console.log('<', 'PONG')
+  })
 
   ws.on('message', function incoming (message) {
+    console.log('<', message)
     const args = message.split(' ')
     const verb = args.shift().toUpperCase()
     switch (verb) {
@@ -102,6 +106,7 @@ const interval = setInterval(function ping () {
 
     ws.isAlive = false
     ws.ping(() => {})
+    console.log('>', 'PING')
   })
 }, 30000)
 
