@@ -39,18 +39,19 @@ function score (client, args) {
     return
   }
 
+  const msgId = parseInt(args.shift(), 10)
   const ts = parseInt(args.shift(), 10)
   const score = parseInt(args.shift(), 10)
 
-  if (isNaN(ts) || isNaN(score)) {
+  if (isNaN(ts) || isNaN(score) || isNaN(msgId)) {
     console.log('invalid message')
     return
   }
 
   // TODO: broadcast to all listeners, translate ts?
 
-  client.send(`SCORED ${ts}`)
-  console.log('>', `SCORED ${ts}`)
+  client.send(`SCORED ${msgId} ${ts}`)
+  console.log('>', `SCORED ${msgId} ${ts}`)
 }
 
 function subscribe (client, args) {

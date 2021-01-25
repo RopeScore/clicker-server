@@ -25,12 +25,14 @@ it's next connection, even when sending a secret.
 
 #### Score
 
-A sending client MUST send the `SCORE <timestamp> <score>` once a score has been
-registered in the client. The server MUST respond `SCORED <timestamp>`, if the
-sending client does not receive this response it MUST store the `SCORE` command
-and retry at a later time.
+A sending client MUST send the `SCORE <msgId> <timestamp> <score>` once a score
+has been registered in the client. The server MUST respond
+`SCORED <msgId> <timestamp>`, if the sending client does not receive this
+response it MUST store the `SCORE` command and retry at a later time.
 
 `timestamp` MUST increase by 1 every real-time millisecond.
+`msgId` must be sequential and increase by 1 for each `SCORE` message the client
+sends.
 
 ### Receiving client
 
